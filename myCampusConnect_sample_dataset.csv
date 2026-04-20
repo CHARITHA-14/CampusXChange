@@ -1,0 +1,31 @@
+Item Title,Description,Price (₹),Category,Condition,Image (optional)
+Data Structures & Algorithms Book,Comprehensive DSA book for interview preparation,450,Books,good,dsa_book.jpg
+Engineering Mathematics Vol 1,First year engineering maths textbook,300,Books,fair,eng_math.jpg
+Digital Logic Design,Reference book for ECE students,500,Books,like new,dld_book.jpg
+Python Programming Guide,Beginner to advanced python concepts,400,Books,new,python_book.jpg
+Operating Systems Concepts,OS fundamentals and process management,550,Books,good,os_book.jpg
+Wireless Mouse,2.4GHz USB wireless mouse,350,Electronics,like new,mouse.jpg
+HP Scientific Calculator,HP calculator for engineering maths,900,Electronics,good,calculator.jpg
+Dell Laptop Charger,65W original Dell charger,1200,Electronics,fair,charger.jpg
+Bluetooth Earphones,Noise cancelling wireless earphones,800,Electronics,like new,earphones.jpg
+USB 64GB Pen Drive,Sandisk 64GB high speed pen drive,600,Electronics,new,pendrive.jpg
+Notebook Set (5),A4 ruled notebooks pack of 5,200,Stationery,new,notebooks.jpg
+Black Gel Pens (Pack of 10),Smooth writing gel pens,120,Stationery,new,pens.jpg
+Drawing Sheets Bundle,A3 size drawing sheets for engineering graphics,150,Stationery,good,drawing_sheets.jpg
+Geometry Box,Camlin geometry box complete set,180,Stationery,like new,geometry_box.jpg
+Sticky Notes Pack,Colorful sticky notes for quick reminders,90,Stationery,new,sticky_notes.jpg
+Java Programming Book,Object oriented programming using Java,420,Books,good,java_book.jpg
+Computer Networks Textbook,Networking concepts and protocols,480,Books,fair,cn_book.jpg
+LED Study Lamp,Adjustable brightness study lamp,700,Electronics,good,study_lamp.jpg
+Mini Projector,Portable projector for presentations,3500,Electronics,like new,projector.jpg
+Graph Theory Book,Advanced graph algorithms and theory,520,Books,new,graph_book.jpg
+Whiteboard with Markers,Medium size whiteboard for study room,650,Stationery,good,whiteboard.jpg
+Power Bank 10000mAh,Fast charging portable power bank,950,Electronics,good,powerbank.jpg
+C Programming Book,Fundamentals of C language programming,380,Books,fair,c_book.jpg
+Spiral Binding Machine,Small manual binding machine,1500,Stationery,like new,binding_machine.jpg
+Mechanical Engineering Drawing Book,Detailed engineering drawing guide,600,Books,good,mech_drawing.jpg
+Laptop Stand,Adjustable aluminum laptop stand,1100,Electronics,new,laptop_stand.jpg
+Highlighters Set (6),Fluorescent highlighter pens set,160,Stationery,new,highlighters.jpg
+Data Science Handbook,Machine learning and AI basics,750,Books,like new,ds_book.jpg
+Extension Board (4 socket),Multi plug extension board with switch,400,Electronics,good,extension_board.jpg
+Exam Pad Wooden,Hardboard exam writing pad,100,Stationery,good,exam_pad.jpg

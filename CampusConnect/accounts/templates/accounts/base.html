@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'accounts/app.css' %}">
+  {% block extra_css %}{% endblock %}
+  <style>
+    :root {
+      /* Modern light theme */
+      --bg-1: #f8fafc;
+      --bg-2: #ffffff;
+      --bg-3: #f1f5f9;
+      --primary: #3b82f6;
+      --primary-2: #2563eb;
+      --primary-3: #1d4ed8;
+      --accent: #06b6d4;
+      --accent-2: #0891b2;
+      --text: #1e293b;
+      --text-2: #334155;
+      --muted: #64748b;
+      --muted-2: #94a3b8;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --glass: rgba(255, 255, 255, 0.95);
+      --glass-2: rgba(248, 250, 252, 0.9);
+      --shadow: rgba(15, 23, 42, 0.08);
+      --shadow-2: rgba(15, 23, 42, 0.12);
+      --success: #10b981;
+      --error: #ef4444;
+      --info: #3b82f6;
+      --warning: #f59e0b;
+      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      --nav-height: 72px;
+    }
+
+    [data-theme="dark"] {
+      --bg-1: #0f172a;
+      --bg-2: #1e293b;
+      --bg-3: #334155;
+      --primary: #60a5fa;
+      --primary-2: #3b82f6;
+      --primary-3: #2563eb;
+      --accent: #22d3ee;
+      --accent-2: #06b6d4;
+      --text: #f8fafc;
+      --text-2: #e2e8f0;
+      --muted: #94a3b8;
+      --muted-2: #64748b;
+      --border: #334155;
+      --border-2: #475569;
+      --glass: rgba(30, 41, 59, 0.95);
+      --glass-2: rgba(15, 23, 42, 0.9);
+      --shadow: rgba(0, 0, 0, 0.25);
+      --shadow-2: rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-1);
+      color: var(--text);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      margin-right: auto;
+    }
+
+    .nav-brand::before {
+      content: "🎓";
+      font-size: 1.8rem;
+    }
+
+    .nav-brand-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+      max-width: 600px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+      background: rgba(59, 130, 246, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      background: rgba(59, 130, 246, 0.12);
+      font-weight: 600;
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background: var(--gradient);
+      border-radius: 2px;
+    }
+
+    .nav-icon {
+      font-size: 1.1rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+
+    .nav-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.05);
+      transform: translateY(-1px);
+    }
+
+    .user-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .user-menu:hover {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-info-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .user-name-nav {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .user-email-nav {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+    
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 180px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 24px var(--shadow);
+      padding: 8px;
+      display: none;
+      z-index: 1001;
+    }
+    
+    .user-dropdown.show {
+      display: block;
+    }
+    
+    .user-dropdown-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+    }
+    
+    .user-dropdown-link:hover {
+      background: rgba(59, 130, 246, 0.08);
+      color: var(--primary);
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      padding: 24px;
+    }
+
+    .mobile-nav.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-link:hover,
+    .mobile-nav-link.active {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .mobile-user-info {
+      padding: 20px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 16px;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: var(--nav-height);
+      padding: 32px 24px;
+      min-height: calc(100vh - var(--nav-height));
+      background: var(--bg-1);
+    }
+
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Messages */
+    .messages { 
+      margin: 0 0 24px 0; 
+    }
+    
+    .message { 
+      padding: 16px 20px; 
+      border-radius: 12px; 
+      margin-bottom: 12px; 
+      border: 1px solid var(--border); 
+      box-shadow: 0 2px 8px var(--shadow);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .message.success { 
+      background: rgba(16, 185, 129, 0.1); 
+      border-color: rgba(16, 185, 129, 0.3); 
+      color: #065f46; 
+    }
+    
+    .message.error { 
+      background: rgba(239, 68, 68, 0.1); 
+      border-color: rgba(239, 68, 68, 0.3); 
+      color: #991b1b; 
+    }
+    
+    .message.info { 
+      background: rgba(59, 130, 246, 0.1); 
+      border-color: rgba(59, 130, 246, 0.3); 
+      color: #1e3a8a; 
+    }
+    
+    .message.warning { 
+      background: rgba(245, 158, 11, 0.1); 
+      border-color: rgba(245, 158, 11, 0.3); 
+      color: #92400e; 
+    }
+
+    /* Cards */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      box-shadow: 0 4px 24px var(--shadow);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px var(--shadow-2);
+    }
+
+    .main-content h1 { 
+      font-weight: 700; 
+      color: var(--text); 
+      margin-bottom: 12px; 
+      font-size: 2.25rem;
+      line-height: 1.2;
+    }
+
+    .main-content p { 
+      color: var(--muted); 
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-center {
+        display: none;
+      }
+
+      .nav-controls {
+        display: none;
+      }
+
+      .user-menu {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nav-brand {
+        font-size: 1.3rem;
+      }
+
+      .main-content {
+        padding: 24px 16px;
+      }
+
+      .card {
+        padding: 24px;
+        margin: 16px 0;
+        border-radius: 16px;
+      }
+
+      .main-content h1 {
+        font-size: 1.875rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-nav {
+        padding: 0 16px;
+      }
+
+      .nav-brand {
+        font-size: 1.2rem;
+        gap: 8px;
+      }
+
+      .main-content {
+        padding: 20px 12px;
+      }
+
+      .card {
+        padding: 20px;
+        border-radius: 12px;
+      }
+
+      .main-content h1 {
+        font-size: 1.75rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <!-- Brand -->
+    <a href="{% url 'homepage' %}" class="nav-brand">
+      <span class="nav-brand-text">CampusConnect</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    {% if user.is_authenticated %}
+    <div class="nav-center">
+      <a href="{% url 'homepage' %}" class="nav-link {% if request.resolver_match.url_name == 'homepage' or request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <i class="fas fa-home nav-icon"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="{% url 'categories' %}" class="nav-link {% if request.resolver_match.url_name == 'categories' %}active{% endif %}">
+        <i class="fas fa-store nav-icon"></i>
+        <span>Browse</span>
+      </a>
+      <a href="{% url 'chats' %}" class="nav-link {% if request.resolver_match.url_name == 'chats' %}active{% endif %}">
+        <i class="fas fa-comments nav-icon"></i>
+        <span>Messages</span>
+      </a>
+      <a href="{% url 'old_requests' %}" class="nav-link {% if request.resolver_match.url_name == 'old_requests' %}active{% endif %}">
+        <i class="fas fa-list nav-icon"></i>
+        <span>My Posts</span>
+      </a>
+      <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+        <i class="fas fa-user nav-icon"></i>
+        <span>Profile</span>
+      </a>
+    </div>
+    {% endif %}
+
+    <!-- Right Side -->
+    <div class="nav-right">
+      <!-- Theme Toggle -->
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="toggleTheme()" title="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+
+      {% if user.is_authenticated %}
+        <!-- User Menu -->
+        <div class="user-menu" onclick="toggleUserMenu()">
+          <div class="user-avatar">
+            {{ user.first_name.0|default:user.username.0|upper }}
+          </div>
+          <div class="user-info-nav">
+            <div class="user-name-nav">{{ user.first_name|default:user.username }}</div>
+            <div class="user-email-nav">{{ user.email|truncatechars:20 }}</div>
+          </div>
+          <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: var(--muted);"></i>
+          <div class="user-dropdown" id="userDropdown">
+            <a href="{% url 'logout' %}" class="user-dropdown-link" style="color: var(--error);">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <!-- Login/Register Buttons -->
+        <a href="{% url 'login' %}" class="nav-link">
+          <i class="fas fa-sign-in-alt nav-icon"></i>
+          <span>Login</span>
+        </a>
+      {% endif %}
+
+      <!-- Mobile Menu Button -->
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" id="mobileNav">
+    {% if user.is_authenticated %}
+      <!-- Mobile User Info -->
+      <div class="mobile-user-info">
+        <div class="user-avatar" style="width: 48px; height: 48px; font-size: 1.2rem; margin-bottom: 12px;">
+          {{ user.first_name.0|default:user.username.0|upper }}
+        </div>
+        <div class="user-name-nav" style="font-size: 1rem; margin-bottom: 4px;">{{ user.first_name|default:user.username }}</div>
+        <div class="user-email-nav">{{ user.email }}</div>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      <div class="mobile-nav-links">
+        <a href="{% url 'homepage' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'homepage' or request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="{% url 'categories' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'categories' %}active{% endif %}">
+          <i class="fas fa-store"></i>
+          <span>Browse Items</span>
+        </a>
+        <a href="{% url 'chats' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'chats' %}active{% endif %}">
+          <i class="fas fa-comments"></i>
+          <span>Messages</span>
+        </a>
+        <a href="{% url 'old_requests' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'old_requests' %}active{% endif %}">
+          <i class="fas fa-list"></i>
+          <span>My Posts</span>
+        </a>
+        <a href="{% url 'profile' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </a>
+        <a href="{% url 'logout' %}" class="mobile-nav-link" style="color: var(--error); border-color: var(--error);">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    {% else %}
+      <div class="mobile-nav-links">
+        <a href="{% url 'home' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+        <a href="{% url 'login' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Login</span>
+        </a>
+        <a href="{% url 'register' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}">
+          <i class="fas fa-user-plus"></i>
+          <span>Register</span>
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <div class="content-container fade-in">
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="message {{ message.tags }}">
+              {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle"></i>
+              {% elif message.tags == 'error' %}
+                <i class="fas fa-exclamation-circle"></i>
+              {% elif message.tags == 'warning' %}
+                <i class="fas fa-exclamation-triangle"></i>
+              {% else %}
+                <i class="fas fa-info-circle"></i>
+              {% endif %}
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+
+
+  <script>
+    // Initialize theme
+    (function initTheme(){
+      try {
+        const saved = localStorage.getItem('cx_theme');
+        const theme = saved === 'dark' || saved === 'light' ? saved : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        updateThemeIcon(theme);
+      } catch (e) {}
+    })();
+    
+    function toggleTheme(){
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      updateThemeIcon(next);
+      try { localStorage.setItem('cx_theme', next); } catch(e) {}
+    }
+    
+    function updateThemeIcon(theme) {
+      const themeBtn = document.querySelector('.nav-btn i');
+      if (themeBtn) {
+        themeBtn.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+      }
+    }
+    
+    function toggleMobileMenu() {
+      const mobileNav = document.getElementById('mobileNav');
+      mobileNav.classList.toggle('active');
+    }
+    
+    function toggleUserMenu() {
+      const dd = document.getElementById('userDropdown');
+      if (!dd) return;
+      dd.classList.toggle('show');
+    }
+    
+    document.addEventListener('click', function(e) {
+      const dd = document.getElementById('userDropdown');
+      const um = document.querySelector('.user-menu');
+      if (!dd || !um) return;
+      if (!um.contains(e.target)) {
+        dd.classList.remove('show');
+      }
+    });
+    
+    // Close mobile menu on window resize
+    window.addEventListener('resize', function() {
+      const mobileNav = document.getElementById('mobileNav');
+      if (window.innerWidth > 768) {
+        mobileNav.classList.remove('active');
+      }
+    });
+    
+    // Close mobile menu when clicking on a link
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          const mobileNav = document.getElementById('mobileNav');
+          mobileNav.classList.remove('active');
+        });
+      });
+    });
+    
+    // Smooth scrolling and animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add fade-in animation to cards
+      const cards = document.querySelectorAll('.card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+          }
+        });
+      });
+      
+      cards.forEach(card => {
+        observer.observe(card);
+      });
+    });
+  </script>
+</body>
+</html>

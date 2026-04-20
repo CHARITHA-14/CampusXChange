@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New message - CampusConnect</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            margin: 0;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .content {
+            padding: 24px;
+        }
+        .message-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            border-left: 4px solid #8b5cf6;
+        }
+        .message-content {
+            font-style: italic;
+            color: #475569;
+            margin: 8px 0;
+        }
+        .context-card {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 16px 0;
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 16px 24px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>💬 New Message</h1>
+            <p>CampusConnect</p>
+        </div>
+        
+        <div class="content">
+            <p style="font-size: 1.1rem; margin-bottom: 16px;">
+                Hi <strong>{{ recipient.first_name|default:recipient.username }}</strong>,
+            </p>
+            
+            <p>You have a new message from <strong>{{ sender.first_name|default:sender.username }}</strong>:</p>
+            
+            <div class="message-card">
+                <div class="message-content">"{{ message.content|truncatewords:50 }}"</div>
+                <small style="color: #64748b;">{{ message.created_at|date:"M d, Y at g:i A" }}</small>
+            </div>
+            
+            {% if context_item %}
+            <div class="context-card">
+                <h4 style="margin: 0 0 8px 0; color: #1e293b;">{{ context_type|title }} Context:</h4>
+                <p style="margin: 4px 0; font-weight: 600;">{{ context_item.title }}</p>
+                {% if context_type == "item" %}
+                <p style="margin: 4px 0; color: #64748b;">₹{{ context_item.price }}</p>
+                {% else %}
+                <p style="margin: 4px 0; color: #64748b;">Budget: ₹{{ context_item.budget }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div style="text-align: center; margin: 24px 0;">
+                <a href="{{ chat_url }}" class="cta-button">
+                    💬 Open Conversation
+                </a>
+            </div>
+            
+            <p style="font-size: 0.9rem; color: #64748b; text-align: center;">
+                If the button doesn't work, copy and paste this link:<br>
+                <a href="{{ chat_url }}" style="color: #3b82f6;">{{ chat_url }}</a>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>You received this email because you have an active conversation on CampusConnect.</p>
+            <p>© {{ current_year }} CampusConnect - Your Campus Marketplace</p>
+        </div>
+    </div>
+</body>
+</html>

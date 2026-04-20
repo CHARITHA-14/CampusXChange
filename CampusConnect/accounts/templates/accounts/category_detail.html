@@ -1,0 +1,205 @@
+{% extends "accounts/base.html" %}
+{% block title %}{{ category_display }} - CampusConnect{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+  <div class="category-header">
+    <h1 class="category-title">{{ category_display }}</h1>
+    <p class="category-subtitle">Browse posts and requests in {{ category_display }}</p>
+    <a href="{% url 'categories' %}" class="back-btn">← Back to Categories</a>
+  </div>
+
+  <div class="content-container">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">📦</span>
+        <h2 class="section-title">Items for Sale</h2>
+      </div>
+      {% if posts %}
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          {% for post in posts %}
+            <div class="col">
+              <div class="item-card">
+                <div class="item-header">
+                  <span class="item-type post">For Sale</span>
+                  <span class="item-date">{{ post.created_at|date:"M j, Y" }}</span>
+                </div>
+                {% if post.image %}
+                  <div class="item-media"><img src="{{ post.image.url }}" alt="{{ post.title }}"></div>
+                {% endif %}
+                <h3 class="item-title">{{ post.title }}</h3>
+                <p class="item-description">{{ post.description }}</p>
+                <div class="item-details">
+                  <div>
+                    <div class="item-price">₹{{ post.price }}</div>
+                    <div class="item-category">{{ post.category|title }} • {{ post.condition|title }}</div>
+                  </div>
+                </div>
+                <div class="item-actions">
+                  {% if post.user == request.user %}
+                    <span class="btn btn-outline-secondary disabled">👤 Your Item</span>
+                  {% else %}
+                    <button class="btn btn-primary" onclick="expressInterest({{ post.id }})">
+                      <i class="fas fa-comments"></i> Chat About Item
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <h3>No items for sale yet</h3>
+          <p>Be the first to post an item in {{ category_display }}!</p>
+          <a href="{% url 'old_requests' %}" class="btn btn-primary">Create Post</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">🔍</span>
+        <h2 class="section-title">Items Wanted</h2>
+      </div>
+      {% if requests %}
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          {% for user_request in requests %}
+            <div class="col">
+              <div class="item-card">
+                <div class="item-header">
+                  <span class="item-type request">Wanted</span>
+                  <span class="item-date">{{ user_request.created_at|date:"M j, Y" }}</span>
+                </div>
+                {% if user_request.image %}
+                  <div class="item-media"><img src="{{ user_request.image.url }}" alt="{{ user_request.title }}"></div>
+                {% endif %}
+                <h3 class="item-title">{{ user_request.title }}</h3>
+                <p class="item-description">{{ user_request.description }}</p>
+                <div class="item-details">
+                  <div>
+                    <div class="item-budget">Budget: ₹{{ user_request.budget }}</div>
+                    <div class="item-category">{{ user_request.category|title }} • {{ user_request.urgency|title }} Priority</div>
+                  </div>
+                </div>
+                <div class="item-actions">
+                  {% if user_request.user == request.user %}
+                    <span class="btn btn-outline-secondary disabled">👤 Your Request</span>
+                  {% else %}
+                    <button class="btn btn-primary" onclick="respondToRequest({{ user_request.id }})">
+                      <i class="fas fa-comments"></i> Chat About Request
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <h3>No requests yet</h3>
+          <p>No one is looking for {{ category_display }} items right now.</p>
+          <a href="{% url 'old_requests' %}" class="btn btn-primary">Create Request</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  // Show success message
+  function showSuccessMessage(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alert.innerHTML = `
+      <i class="fas fa-check-circle"></i> ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+      if (alert.parentNode) {
+        alert.remove();
+      }
+    }, 3000);
+  }
+
+  // Show error message
+  function showErrorMessage(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alert.innerHTML = `
+      <i class="fas fa-exclamation-circle"></i> ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+      if (alert.parentNode) {
+        alert.remove();
+      }
+    }, 5000);
+  }
+
+  // Express interest in an item - directly start chat
+  async function expressInterest(itemId) {
+    try {
+      const response = await fetch(`/api/express-interest/${itemId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        credentials: 'include',
+        body: JSON.stringify({ message: "Hi! I'm interested in your item. Is it still available?" })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Redirect to chat
+        window.location.href = `/chats/?conversation_id=${data.conversation_id}`;
+      } else {
+        showErrorMessage(data.error || 'Failed to start conversation');
+      }
+    } catch (error) {
+      showErrorMessage('Network error. Please try again.');
+    }
+  }
+
+  // Respond to a request - directly start chat
+  async function respondToRequest(requestId) {
+    try {
+      const response = await fetch(`/api/respond-to-request/${requestId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        credentials: 'include',
+        body: JSON.stringify({ message: "Hi! I have what you're looking for. Let me know if you're interested!" })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Redirect to chat
+        window.location.href = `/chats/?conversation_id=${data.conversation_id}`;
+      } else {
+        showErrorMessage(data.error || 'Failed to start conversation');
+      }
+    } catch (error) {
+      showErrorMessage('Network error. Please try again.');
+    }
+  }
+</script>
+{% endblock %}

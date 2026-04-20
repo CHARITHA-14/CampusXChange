@@ -1,0 +1,246 @@
+{% extends "accounts/base.html" %}
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div class="categories-container">
+  <div class="categories-header">
+    <h1 class="page-header">📦 Browse Categories</h1>
+    <p class="page-subtitle">Explore items by category and find what you need</p>
+  </div>
+
+  <div class="categories-grid">
+    {% for cat in categories %}
+      <div class="category-card">
+        <div class="category-icon">{{ cat.icon|default:"📦" }}</div>
+        <div class="category-content">
+          <h3 class="category-name">{{ cat.name }}</h3>
+          <p class="category-desc">{{ cat.description|default:"Browse items in this category" }}</p>
+          <div class="category-stats">
+            <span class="stat-item">
+              <span class="stat-number">{{ cat.post_set.count }}</span>
+              <span class="stat-label">Items</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-number">{{ cat.request_set.count }}</span>
+              <span class="stat-label">Requests</span>
+            </span>
+          </div>
+        </div>
+        <a class="category-link" href="{% url 'category_detail' cat.slug %}">
+          <span>Explore</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    {% empty %}
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3>No categories available</h3>
+        <p>Categories will appear here once they are added to the system.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+.categories-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.categories-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 40px 20px;
+  background: var(--gradient);
+  border-radius: 20px;
+  color: #fff;
+}
+
+.page-header {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.category-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px var(--shadow);
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient);
+}
+
+.category-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient);
+  border-radius: 12px;
+  color: #fff;
+}
+
+.category-content {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.category-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.category-desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.category-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-1);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.stat-number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.category-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--primary);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.category-link:hover {
+  background: var(--primary-2);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.category-link:hover .arrow {
+  transform: translateX(4px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: var(--muted);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .categories-container {
+    padding: 15px;
+  }
+  
+  .page-header {
+    font-size: 2rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
+  
+  .categories-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .category-stats {
+    justify-content: center;
+  }
+}
+</style>
+{% endblock %}

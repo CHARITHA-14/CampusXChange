@@ -1,0 +1,218 @@
+{% extends "accounts/base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+  <div class="edit-container">
+    <div class="edit-header">
+      <h1>✏️ Edit Profile</h1>
+      <p>Update your personal information and academic details</p>
+    </div>
+
+    <div class="edit-form">
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            <div class="alert alert-danger">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-section">
+          <h3>👤 Personal Information</h3>
+          <div class="form-group">
+            <label for="{{ user_form.first_name.id_for_label }}">First Name</label>
+            {{ user_form.first_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ user_form.last_name.id_for_label }}">Last Name</label>
+            {{ user_form.last_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ user_form.email.id_for_label }}">Email Address</label>
+            {{ user_form.email }}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>🎓 Academic Information</h3>
+          <div class="form-group">
+            <label for="{{ profile_form.course.id_for_label }}">Course</label>
+            {{ profile_form.course }}
+          </div>
+          <div class="form-group">
+            <label for="{{ profile_form.year.id_for_label }}">Academic Year</label>
+            {{ profile_form.year }}
+          </div>
+          <div class="form-group">
+            <label for="{{ profile_form.branch.id_for_label }}">Branch/Department</label>
+            {{ profile_form.branch }}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>📞 Contact Information</h3>
+          <div class="form-group">
+            <label for="{{ profile_form.phone_number.id_for_label }}">Phone Number</label>
+            {{ profile_form.phone_number }}
+          </div>
+          <div class="form-group">
+            <label for="{{ profile_form.location.id_for_label }}">Location</label>
+            {{ profile_form.location }}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>📝 Additional Information</h3>
+          <div class="form-group">
+            <label for="{{ profile_form.bio.id_for_label }}">Bio</label>
+            {{ profile_form.bio }}
+          </div>
+          <div class="form-group">
+            <label for="{{ profile_form.profile_picture.id_for_label }}">Profile Picture</label>
+            {{ profile_form.profile_picture }}
+            {% if profile.profile_picture %}
+              <div class="current-image">
+                <small>Current image:</small>
+                <img src="{{ profile.profile_picture.url }}" alt="Current profile picture" style="max-width: 100px; max-height: 100px; border-radius: 8px; margin-top: 8px;">
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+          <a href="{% url 'profile' %}" class="btn btn-outline-secondary">❌ Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.edit-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.edit-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.edit-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.edit-header p {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.edit-form {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.form-section {
+  margin-bottom: 32px;
+}
+
+.form-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(31, 58, 147, 0.15);
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.btn-group .btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+  .edit-form {
+    padding: 24px 16px;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    width: 100%;
+  }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends "accounts/base.html" %}
+{% block title %}My Posts & Requests{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+  <div class="page-header">📝 My Posts & Requests</div>
+  <p class="text-muted mb-4">Manage your items and requests</p>
+
+  <div class="action-buttons">
+    <button class="btn btn-request" onclick="showForm('post')">📝 Post Item ({{ user_posts|length }})</button>
+    <button class="btn btn-respond" onclick="showForm('request')">🔍 Make Request ({{ user_requests|length }})</button>
+  </div>
+
+  <!-- Post Form -->
+  <div id="postForm" class="form-container">
+    <h3>Post an Item for Sale</h3>
+    <form id="postItemForm" method="post" action="{% url 'create_post' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="postTitle">Item Title</label>
+        <input type="text" id="postTitle" name="title" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="postDescription">Description</label>
+        <textarea id="postDescription" name="description" rows="3" class="form-control" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="postPrice">Price (₹)</label>
+        <input type="number" id="postPrice" name="price" step="0.01" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="postCategory">Category</label>
+        <select id="postCategory" name="category" class="form-select" required>
+          <option value="">Select Category</option>
+          {% for category in categories %}
+            <option value="{{ category.slug }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="postCondition">Condition</label>
+        <select id="postCondition" name="condition" class="form-select" required>
+          <option value="">Select Condition</option>
+          <option value="new">New</option>
+          <option value="like_new">Like New</option>
+          <option value="good">Good</option>
+          <option value="fair">Fair</option>
+          <option value="poor">Poor</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="postImage">Image (optional)</label>
+        <input type="file" id="postImage" name="image" accept="image/*" class="form-control">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" onclick="hideForm('post')">Cancel</button>
+        <button type="submit" class="btn btn-success">Post Item</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Request Form -->
+  <div id="requestForm" class="form-container">
+    <h3>Make a Request</h3>
+    <form id="requestItemForm" method="post" action="{% url 'create_request' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="requestTitle">Item Needed</label>
+        <input type="text" id="requestTitle" name="title" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="requestDescription">Description</label>
+        <textarea id="requestDescription" name="description" rows="3" class="form-control" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="requestBudget">Budget (₹)</label>
+        <input type="number" id="requestBudget" name="budget" step="0.01" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="requestCategory">Category</label>
+        <select id="requestCategory" name="category" class="form-select" required>
+          <option value="">Select Category</option>
+          {% for category in categories %}
+            <option value="{{ category.slug }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="requestUrgency">Urgency</label>
+        <select id="requestUrgency" name="urgency" class="form-select" required>
+          <option value="">Select Urgency</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="urgent">Urgent</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="requestImage">Reference Image (optional)</label>
+        <input type="file" id="requestImage" name="image" accept="image/*" class="form-control">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" onclick="hideForm('request')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Submit Request</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Items Grid -->
+  <div id="itemsContainer">
+    <div id="itemsGrid" class="items-grid">
+      {% for post in user_posts %}
+        <div class="item-card">
+          <div class="item-header">
+            <span class="item-type post">POST</span>
+            <span class="item-date">{{ post.created_at|date:"M j, Y" }}</span>
+          </div>
+          {% if post.image %}
+            <div class="item-media"><img src="{{ post.image.url }}" alt="{{ post.title }}"></div>
+          {% endif %}
+          <div class="item-title">{{ post.title }}</div>
+          <div class="item-description">{{ post.description }}</div>
+          <div class="item-details">
+            <span>Category: {{ post.category.name|title }}</span>
+            <span>₹{{ post.price }}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-accent" onclick="editItem('post', {{ post.id }})">Edit</button>
+            <a href="{% url 'delete_post' post.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+          </div>
+        </div>
+      {% endfor %}
+
+      {% for request in user_requests %}
+        <div class="item-card">
+          <div class="item-header">
+            <span class="item-type request">REQUEST</span>
+            <span class="item-date">{{ request.created_at|date:"M j, Y" }}</span>
+          </div>
+          {% if request.image %}
+            <div class="item-media"><img src="{{ request.image.url }}" alt="{{ request.title }}"></div>
+          {% endif %}
+          <div class="item-title">{{ request.title }}</div>
+          <div class="item-description">{{ request.description }}</div>
+          <div class="item-details">
+            <span>Category: {{ request.category.name|title }}</span>
+            <span>Budget: ₹{{ request.budget }}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-accent" onclick="editItem('request', {{ request.id }})">Edit</button>
+            <a href="{% url 'delete_request' request.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    {% if not user_posts and not user_requests %}
+      <div class="empty-state">
+        <h3>No items yet</h3>
+        <p>Create your first post or request to get started!</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function showForm(type) {
+    document.getElementById('postForm').classList.remove('active');
+    document.getElementById('requestForm').classList.remove('active');
+    document.getElementById(type + 'Form').classList.add('active');
+  }
+
+  function hideForm(type) {
+    document.getElementById(type + 'Form').classList.remove('active');
+    document.getElementById(type + 'ItemForm').reset();
+  }
+
+  function editItem(type, id) {
+    alert(`Edit ${type} with ID: ${id}. This would open an edit form.`);
+  }
+</script>
+{% endblock %}

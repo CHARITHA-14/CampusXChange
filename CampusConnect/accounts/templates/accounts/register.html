@@ -1,0 +1,268 @@
+{% extends "accounts/public_base.html" %}
+{% block title %}Register - CampusConnect{% endblock %}
+{% block content %}
+  <div class="auth-container">
+    <div class="auth-card register-card">
+      <div class="auth-header">
+        <div class="auth-icon">📝</div>
+        <h1 class="auth-title">Join CampusConnect</h1>
+        <p class="auth-subtitle">Create your account and start trading with fellow students</p>
+      </div>
+      
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.full_name.id_for_label }}" class="form-label">
+              <span class="label-icon">👤</span>
+              Full Name
+            </label>
+            {{ form.full_name }}
+            {% for error in form.full_name.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}" class="form-label">
+              <span class="label-icon">📧</span>
+              Email
+            </label>
+            {{ form.email }}
+            {% for error in form.email.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.username.id_for_label }}" class="form-label">
+              <span class="label-icon">🏷️</span>
+              Username
+            </label>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.course.id_for_label }}" class="form-label">
+              <span class="label-icon">🎓</span>
+              Course
+            </label>
+            {{ form.course }}
+            {% for error in form.course.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.year.id_for_label }}" class="form-label">
+              <span class="label-icon">📅</span>
+              Academic Year
+            </label>
+            {{ form.year }}
+            {% for error in form.year.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.branch.id_for_label }}" class="form-label">
+              <span class="label-icon">🏛️</span>
+              Branch/Department
+            </label>
+            {{ form.branch }}
+            {% for error in form.branch.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}" class="form-label">
+              <span class="label-icon">🔒</span>
+              Password
+            </label>
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}" class="form-label">
+              <span class="label-icon">🔐</span>
+              Confirm Password
+            </label>
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+              <div class="error-message">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        {% if form.non_field_errors %}
+          <div class="error-message">{{ form.non_field_errors.0 }}</div>
+        {% endif %}
+        
+        <button type="submit" class="auth-button">
+          <span class="button-text">Create Account</span>
+          <span class="button-icon">→</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: var(--bg-1);
+    }
+
+    .register-card {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .auth-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    .auth-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .auth-subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .auth-form {
+      margin-bottom: 25px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .label-icon {
+      font-size: 1.1rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: var(--bg-2);
+      color: var(--text);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(31, 58, 147, 0.1);
+    }
+
+    .auth-button {
+      width: 100%;
+      padding: 14px 20px;
+      background: var(--gradient);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .auth-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(31, 58, 147, 0.3);
+    }
+
+    .button-icon {
+      font-size: 1.2rem;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      
+      .form-group {
+        margin-bottom: 20px;
+      }
+      
+      .auth-card {
+        padding: 30px 20px;
+      }
+      
+      .auth-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+{% endblock %}

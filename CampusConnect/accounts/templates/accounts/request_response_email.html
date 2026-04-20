@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Someone responded to your request - CampusConnect</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            margin: 0;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .header p {
+            margin: 8px 0 0 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 32px 24px;
+        }
+        .notification-badge {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+        }
+        .request-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .request-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+        }
+        .request-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        .request-budget {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #06b6d4;
+            margin-bottom: 12px;
+        }
+        .request-description {
+            color: #64748b;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .responder-info {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .responder-info h3 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+        .responder-info p {
+            margin: 4px 0;
+            color: #64748b;
+        }
+        .response-message {
+            background: #f0f9ff;
+            border: 1px solid #0284c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #0c4a6e;
+        }
+        .cta-section {
+            text-align: center;
+            margin: 32px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+            margin: 0 8px;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
+        }
+        .cta-button.secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+            box-shadow: 0 4px 16px rgba(100, 116, 139, 0.3);
+        }
+        .cta-button.secondary:hover {
+            box-shadow: 0 8px 24px rgba(100, 116, 139, 0.4);
+        }
+        .safety-note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            color: #92400e;
+        }
+        .safety-note strong {
+            color: #d97706;
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>🎓 CampusConnect</h1>
+            <p>Someone responded to your request!</p>
+        </div>
+        
+        <div class="content">
+            <div class="notification-badge">
+                🎯 New Response to Your Request!
+            </div>
+            
+            <p style="font-size: 1.1rem; color: #1e293b; margin-bottom: 24px;">
+                Hi <strong>{{ request_owner.first_name|default:request_owner.username }}</strong>,
+            </p>
+            
+            <p style="margin-bottom: 20px;">
+                Great news! Someone has responded to your request on CampusConnect:
+            </p>
+            
+            <div class="request-card">
+                <div class="request-title">{{ request.title }}</div>
+                <div class="request-budget">Budget: ₹{{ request.budget }}</div>
+                <div class="request-description">{{ request.description|truncatewords:30 }}</div>
+            </div>
+            
+            <div class="responder-info">
+                <h3>👤 Response from</h3>
+                <p><strong>Name:</strong> {{ responder.first_name|default:responder.username }}</p>
+                <p><strong>Email:</strong> {{ responder.email }}</p>
+                {% if responder.profile.course %}
+                <p><strong>Course:</strong> {{ responder.profile.course }}</p>
+                {% endif %}
+            </div>
+            
+            {% if message %}
+            <div class="response-message">
+                <strong>💬 Message:</strong><br>
+                "{{ message }}"
+            </div>
+            {% endif %}
+            
+            <div class="cta-section">
+                <a href="{{ chat_url }}" class="cta-button">
+                    💬 Start Conversation
+                </a>
+                <a href="{{ request_url }}" class="cta-button secondary">
+                    👀 View Request
+                </a>
+            </div>
+            
+            <div class="safety-note">
+                <strong>🔒 Safety Reminder:</strong> Always meet in safe, public places when exchanging items. Verify the person's identity before meeting and never share sensitive personal information. Use CampusConnect's chat system for all communications.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>You received this email because someone responded to your request on CampusConnect.</p>
+            <p>© {{ current_year }} CampusConnect - Your Campus Marketplace</p>
+        </div>
+    </div>
+</body>
+</html>

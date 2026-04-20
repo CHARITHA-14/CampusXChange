@@ -1,0 +1,449 @@
+{% extends "accounts/public_base.html" %}
+{% load static %}
+{% block title %}CampusConnect - Home{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'accounts/app.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="homepage-container">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to CampusConnect</h1>
+      <p class="hero-subtitle">Connect, Share, and Grow with your campus community</p>
+      <p class="hero-description">
+        The ultimate student marketplace where you can buy, sell, and request items 
+        from fellow students. Safe, fast, and convenient trading within your campus.
+      </p>
+      
+      {% if request.user.is_authenticated and unread_chat_count and unread_chat_count > 0 %}
+        <div class="notification-banner">
+          <div class="notification-icon">💬</div>
+          <div class="notification-content">
+            <div class="notification-title">New Messages!</div>
+            <div class="notification-text">
+              You have {{ unread_chat_count }} new chat notification{{ unread_chat_count|pluralize }}.
+            </div>
+          </div>
+          <a href="{% url 'chats' %}" class="notification-button">View Chats</a>
+        </div>
+      {% endif %}
+      
+      <div class="hero-actions">
+        <a href="{% url 'login' %}" class="btn btn-primary btn-large">
+          <span class="btn-icon">🔑</span>
+          <span class="btn-text">Sign In</span>
+        </a>
+        <a href="{% url 'register' %}" class="btn btn-secondary btn-large">
+          <span class="btn-icon">📝</span>
+          <span class="btn-text">Join Now</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Buy & Sell</div>
+        <div class="card-desc">Trade items with students</div>
+      </div>
+      <div class="visual-card">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">Find Items</div>
+        <div class="card-desc">Request what you need</div>
+      </div>
+      <div class="visual-card">
+        <div class="card-icon">💬</div>
+        <div class="card-title">Chat & Connect</div>
+        <div class="card-desc">Communicate safely</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <h2 class="section-title">Why Choose CampusConnect?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3 class="feature-title">Safe & Secure</h3>
+        <p class="feature-desc">Verified student accounts ensure safe transactions within your campus community.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">Fast & Convenient</h3>
+        <p class="feature-desc">Quick posting, instant messaging, and easy meetups for seamless trading.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3 class="feature-title">Student-Friendly</h3>
+        <p class="feature-desc">Affordable prices and budget-friendly options designed for student life.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="info-card">
+      <div class="info-header">
+        <div class="info-icon">ℹ️</div>
+        <h3 class="info-title">About CampusConnect</h3>
+      </div>
+      <p class="info-text">
+        CampusConnect is a student-first marketplace platform designed to facilitate 
+        easy trading of books, electronics, stationery, and other items within campus communities. 
+        Our mission is to create a sustainable, safe, and convenient trading environment 
+        that helps students save money and reduce waste.
+      </p>
+    </div>
+    
+    <div class="info-card">
+      <div class="info-header">
+        <div class="info-icon">📞</div>
+        <h3 class="info-title">Contact & Support</h3>
+      </div>
+      <div class="contact-info">
+        <div class="contact-item">
+          <span class="contact-icon">📧</span>
+          <span class="contact-text">support@campusxchange.com</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📱</span>
+          <span class="contact-text">+91 1234567890</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">💬</span>
+          <span class="contact-text">Live Chat Support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <style>
+.homepage-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+      align-items: center;
+  margin-bottom: 80px;
+  padding: 40px 0;
+}
+
+.hero-content {
+  text-align: left;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--text);
+      margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.hero-description {
+  font-size: 1.1rem;
+  color: var(--muted);
+  line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+.notification-banner {
+  background: var(--gradient);
+  color: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 8px 32px rgba(31, 58, 147, 0.3);
+}
+
+.notification-icon {
+  font-size: 2rem;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.notification-text {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.notification-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.notification-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      border: none;
+  cursor: pointer;
+}
+
+.btn-large {
+  padding: 18px 36px;
+  font-size: 1.2rem;
+}
+
+.btn-primary {
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(31, 58, 147, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(31, 58, 147, 0.4);
+      color: #fff;
+    }
+
+.btn-secondary {
+  background: var(--bg-2);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  background: var(--primary);
+  color: #fff;
+      transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(31, 58, 147, 0.3);
+}
+
+.btn-icon {
+  font-size: 1.3rem;
+}
+
+.hero-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visual-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 32px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.visual-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px var(--shadow);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 1.3rem;
+      font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.features-section {
+  margin-bottom: 80px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 32px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px var(--shadow);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.feature-title {
+      font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 15px;
+}
+
+.feature-desc {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.info-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 32px var(--shadow);
+}
+
+.info-header {
+      display: flex;
+      align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.info-icon {
+  font-size: 2rem;
+}
+
+.info-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.info-text {
+  color: var(--muted);
+  line-height: 1.6;
+      font-size: 1rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact-icon {
+  font-size: 1.2rem;
+  width: 30px;
+}
+
+.contact-text {
+  color: var(--text);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .hero-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .info-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .notification-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+{% endblock %}

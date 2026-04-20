@@ -1,0 +1,279 @@
+{% extends "accounts/base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        {% if profile.profile_picture %}
+          <img src="{{ profile.profile_picture.url }}" alt="{{ user.first_name|default:user.username }}" class="avatar-image">
+        {% else %}
+          {{ user.first_name|first|upper|default:user.username|first|upper }}
+        {% endif %}
+      </div>
+      <div class="profile-name">{{ user.first_name|default:user.username }}</div>
+      <div class="profile-username">@{{ user.username }}</div>
+      {% if profile.is_verified %}
+        <div class="verification-badge">✅ Verified Student</div>
+      {% endif %}
+
+      <div class="profile-stats">
+        <div class="stat-card">
+          <div class="stat-number">{{ posts_count }}</div>
+          <div class="stat-label">Posts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ requests_count }}</div>
+          <div class="stat-label">Requests</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ user.conversations.count }}</div>
+          <div class="stat-label">Conversations</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <h3>📋 Personal Information</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Full Name</div>
+          <div class="info-value">{{ user.first_name }} {{ user.last_name|default:"" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Email Address</div>
+          <div class="info-value">{{ user.email|default:"Not provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Course</div>
+          <div class="info-value">{{ profile.course|default:"Not provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Branch</div>
+          <div class="info-value">{{ profile.branch|default:"Not provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Academic Year</div>
+          <div class="info-value">{{ profile.year|default:"Not provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Phone Number</div>
+          <div class="info-value">{{ profile.phone_number|default:"Not provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Location</div>
+          <div class="info-value">{{ profile.location|default:"Not provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Bio</div>
+          <div class="info-value">{{ profile.bio|default:"No bio provided" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Account Created</div>
+          <div class="info-value">{{ user.date_joined|date:"F j, Y" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Last Active</div>
+          <div class="info-value">{{ profile.last_active|date:"F j, Y" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <a href="{% url 'edit_profile' %}" class="btn btn-primary">✏️ Edit Profile</a>
+      <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">🏠 Dashboard</a>
+      <a href="{% url 'logout' %}" class="btn btn-outline-secondary">🚪 Logout</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-header {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 auto 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.verification-badge {
+  display: inline-block;
+  background: var(--success);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.profile-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.profile-username {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-width: 80px;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-details {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.profile-details h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.info-item {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-group .btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    padding: 24px 16px;
+  }
+  
+  .profile-stats {
+    gap: 16px;
+  }
+  
+  .stat-card {
+    min-width: 70px;
+    padding: 12px;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-group .btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+</style>
+{% endblock %}
