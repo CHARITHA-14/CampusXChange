@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-crk17&##bwo6=pt*_^d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ['1', 'true', 'yes', 'on']
 
-ALLOWED_HOSTS = [*]
+ALLOWED_HOSTS = ['*']
 
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
