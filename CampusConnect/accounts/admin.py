@@ -153,8 +153,8 @@ class AnalyticsAdmin(admin.ModelAdmin):
     readonly_fields = ('date',)
 
 # Admin site branding
-admin.site.site_header = 'CampusConnect Administration'
-admin.site.site_title = 'CampusConnect Admin'
+admin.site.site_header = 'CampusXChange Administration'
+admin.site.site_title = 'CampusXChange Admin'
 admin.site.index_title = 'Dashboard'
 
 @admin.register(Session)

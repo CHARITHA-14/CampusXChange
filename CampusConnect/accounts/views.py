@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
@@ -10,7 +10,6 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 from .models import Profile, Notification, Conversation, Message, Post, Request, Category
@@ -65,8 +64,8 @@ def homepage(request):
 @never_cache
 def categories(request):
     from .models import Category
-    
-    # Auto-populate categories if none exist
+
+    # Auto-populate categories if none exist (runs only once when DB is empty)
     if not Category.objects.exists():
         default_categories = [
             {'name': 'Books', 'slug': 'books', 'description': 'Academic books, novels, reference materials', 'icon': '📚'},
@@ -78,7 +77,6 @@ def categories(request):
             {'name': 'Kitchen', 'slug': 'kitchen', 'description': 'Cookware, utensils, appliances', 'icon': '🍳'},
             {'name': 'Others', 'slug': 'others', 'description': 'Miscellaneous items and accessories', 'icon': '📦'},
         ]
-        
         for cat_data in default_categories:
             Category.objects.get_or_create(
                 slug=cat_data['slug'],
@@ -89,80 +87,7 @@ def categories(request):
                     'is_active': True
                 }
             )
-    
-    items_data = [
-        {'title': 'Data Structures & Algorithms', 'description': 'Comprehensive DSA book for interview preparation', 'price': Decimal('450'), 'category': 'books', 'condition': 'good'},
-        {'title': 'Engineering Mathematics Vol 1', 'description': 'First year engineering maths textbook', 'price': Decimal('300'), 'category': 'books', 'condition': 'fair'},
-        {'title': 'Digital Logic Design', 'description': 'Reference book for ECE students', 'price': Decimal('500'), 'category': 'books', 'condition': 'like_new'},
-        {'title': 'Python Programming Guide', 'description': 'Beginner to advanced python concepts', 'price': Decimal('400'), 'category': 'books', 'condition': 'new'},
-        {'title': 'Operating Systems Concepts', 'description': 'OS fundamentals and process management', 'price': Decimal('550'), 'category': 'books', 'condition': 'good'},
-        {'title': 'Wireless Mouse', 'description': '2.4GHz USB wireless mouse', 'price': Decimal('300'), 'category': 'electronics', 'condition': 'like_new'},
-        {'title': 'HP Scientific Calculator', 'description': 'HP calculator for engineering math', 'price': Decimal('900'), 'category': 'electronics', 'condition': 'good'},
-        {'title': 'Dell Laptop Charger', 'description': 'Original Dell 65W charger', 'price': Decimal('1200'), 'category': 'electronics', 'condition': 'fair'},
-        {'title': 'Bluetooth Earphones', 'description': 'Noise cancelling earphones', 'price': Decimal('800'), 'category': 'electronics', 'condition': 'new'},
-        {'title': 'USB 64GB Pen Drive', 'description': 'Sandisk 64GB flash drive', 'price': Decimal('300'), 'category': 'electronics', 'condition': 'new'},
-        {'title': 'Set of 5 Notebooks (Spiral)', 'description': 'Smooth writing notebooks', 'price': Decimal('100'), 'category': 'stationery', 'condition': 'new'},
-        {'title': 'Set of 5 Black Gel Pens (Pack)', 'description': 'Smooth writing gel pens', 'price': Decimal('120'), 'category': 'stationery', 'condition': 'new'},
-        {'title': 'Drawing Sheets A3 size', 'description': 'A3 size drawing sheets pack', 'price': Decimal('200'), 'category': 'stationery', 'condition': 'new'},
-        {'title': 'Geometry Box', 'description': 'Complete geometry box set', 'price': Decimal('150'), 'category': 'stationery', 'condition': 'good'},
-        {'title': 'Sticky Notes', 'description': 'Assorted sticky notes for reminders', 'price': Decimal('50'), 'category': 'stationery', 'condition': 'new'},
-        {'title': 'Java Programming Book', 'description': 'Object oriented programming using Java', 'price': Decimal('420'), 'category': 'books', 'condition': 'good'},
-        {'title': 'Computer Networks Textbook', 'description': 'Networking concepts and protocols', 'price': Decimal('480'), 'category': 'books', 'condition': 'fair'},
-        {'title': 'LED Study Lamp', 'description': 'Adjustable brightness study lamp', 'price': Decimal('700'), 'category': 'electronics', 'condition': 'good'},
-        {'title': 'Mini Projector', 'description': 'Portable projector for presentations', 'price': Decimal('3500'), 'category': 'electronics', 'condition': 'like_new'},
-        {'title': 'Graph Theory Book', 'description': 'Algorithms and graph theory', 'price': Decimal('520'), 'category': 'books', 'condition': 'new'},
-        {'title': 'Whiteboard with Markers', 'description': 'Medium size whiteboard for study room', 'price': Decimal('650'), 'category': 'stationery', 'condition': 'good'},
-        {'title': 'Power Bank 10000mAh', 'description': 'Fast charging portable power bank', 'price': Decimal('950'), 'category': 'electronics', 'condition': 'good'},
-        {'title': 'C Programming Book', 'description': 'Fundamentals of C language programming', 'price': Decimal('380'), 'category': 'books', 'condition': 'fair'},
-        {'title': 'Spiral Binding Machine', 'description': 'Small manual binding machine', 'price': Decimal('1500'), 'category': 'stationery', 'condition': 'like_new'},
-        {'title': 'Mechanical Drawing Guide', 'description': 'Engineering drawing guide', 'price': Decimal('600'), 'category': 'books', 'condition': 'good'},
-        {'title': 'Laptop Stand (Aluminium)', 'description': 'Adjustable aluminium laptop stand', 'price': Decimal('1100'), 'category': 'electronics', 'condition': 'new'},
-        {'title': 'Highlighters Set (6)', 'description': 'Fluorescent highlighter set', 'price': Decimal('160'), 'category': 'stationery', 'condition': 'new'},
-        {'title': 'Data Science Handbook', 'description': 'Machine learning and AI handbook', 'price': Decimal('750'), 'category': 'books', 'condition': 'like_new'},
-        {'title': 'Extension Board 6 sockets', 'description': 'Multi plug extension board', 'price': Decimal('400'), 'category': 'electronics', 'condition': 'good'},
-        {'title': 'Exam Pad Wooden', 'description': 'Exam writing pad', 'price': Decimal('100'), 'category': 'stationery', 'condition': 'good'},
-    ]
-    # Seed items for specific user (DHEDEEPYA / 23B01A4543@svecw.edu.in)
-    from django.contrib.auth.models import User
-    target_email = '23B01A4543@svecw.edu.in'
-    target_name = 'DHEDEEPYA'
-    username_base = 'DHEDEEPYA'
-    target_user = User.objects.filter(email=target_email).first()
-    if not target_user:
-        username_candidate = username_base
-        idx = 1
-        while User.objects.filter(username=username_candidate).exists():
-            username_candidate = f"{username_base}{idx}"
-            idx += 1
-        target_user = User.objects.create(
-            username=username_candidate,
-            email=target_email,
-            first_name=target_name,
-            is_active=True
-        )
-        target_user.set_unusable_password()
-        target_user.save()
-    from .models import Post
-    Post.objects.filter(user=target_user, title__startswith='Sample ').delete()
-    for item in items_data:
-        cat = Category.objects.filter(slug=item['category'], is_active=True).first()
-        if not cat:
-            continue
-        cond = item['condition']
-        if cond in ['like-new', 'like new']:
-            cond = 'like_new'
-        exists = Post.objects.filter(user=target_user, title=item['title'], category=cat, is_active=True).exists()
-        if not exists:
-            Post.objects.create(
-                user=target_user,
-                title=item['title'],
-                description=item['description'],
-                price=item['price'],
-                category=cat,
-                condition=cond,
-                is_active=True
-            )
-    
+
     cats = Category.objects.filter(is_active=True).order_by('name')
     return render(request, "accounts/categories.html", {"categories": cats})
 
@@ -390,13 +315,9 @@ def delete_request(request, request_id):
     return redirect('old_requests')
 
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import CustomUserRegisterForm
-
 def send_verification_email(user):
     """Send verification email to user"""
-    subject = 'Verify Your CampusConnect Account'
+    subject = 'Verify Your CampusXChange Account'
     html_message = render_to_string('accounts/verification_email.html', {
         'user': user,
         'verification_url': f"{settings.SITE_URL}/verify-email/{user.profile.verification_token}/"
@@ -493,7 +414,6 @@ def conversation_messages(request, conversation_id):
     return JsonResponse(messages_data, safe=False)
 
 @login_required
-@csrf_exempt
 @require_http_methods(["POST"])
 def send_message(request, conversation_id):
     """Send a message to a conversation"""
@@ -556,7 +476,6 @@ def start_conversation(request, user_id):
 
 # Item Interest and Request Response Views
 @login_required
-@csrf_exempt
 @require_http_methods(["POST"])
 def express_interest(request, item_id):
     """Express interest in an item and create conversation"""
@@ -610,7 +529,6 @@ def express_interest(request, item_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
-@csrf_exempt
 @require_http_methods(["POST"])
 def respond_to_request(request, request_id):
     """Respond to a request and create conversation"""
@@ -665,7 +583,6 @@ def respond_to_request(request, request_id):
 
 # Enhanced send_message view with email notifications
 @login_required
-@csrf_exempt
 @require_http_methods(["POST"])
 def send_message_enhanced(request, conversation_id):
     """Send a message to a conversation with email notification"""

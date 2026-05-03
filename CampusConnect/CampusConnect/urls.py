@@ -24,5 +24,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in both development and production
+# (In production on Render, media is stored on the ephemeral filesystem;
+#  for persistent storage a cloud bucket like S3 should be used.)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
