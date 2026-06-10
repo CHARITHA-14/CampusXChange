@@ -1,4 +1,4 @@
-# CampusConnect
+# CampusXChange
 
 ## Backend setup (Django)
 
